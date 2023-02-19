@@ -16,11 +16,11 @@ $Inbox = $Folder.Folders.Item($Folder.DefaultStore.GetDefaultFolder(6).EntryID)
 $SentItems = $Folder.Folders.Item($Folder.DefaultStore.GetDefaultFolder(5).EntryID)
 
 # Get all emails in the specified date range in the inbox
-$InboxEmails = $Inbox.Items.Restrict("[ReceivedTime] >= '$StartDate' AND [ReceivedTime] <= '$EndDate'")
+$InboxEmails = $Inbox.Items.Restrict("[ReceivedTime] >= '$StartDate' AND [ReceivedTime] <= '$EndDate'").Include("ReceivedTime", "Size")
 $InboxEmailsPerMonth = $InboxEmails | Group-Object { $_.ReceivedTime.ToString("yyyy-MM") } | Select-Object Name, Count, @{Name="Size";Expression={($_.Group | Measure-Object Size -Sum).Sum / 1KB}}
 
 # Get all emails in the specified date range in sent items
-$SentEmails = $SentItems.Items.Restrict("[SentOn] >= '$StartDate' AND [SentOn] <= '$EndDate'")
+$SentEmails = $SentItems.Items.Restrict("[SentOn] >= '$StartDate' AND [SentOn] <= '$EndDate'").Include("SentOn", "Size")
 $SentEmailsPerMonth = $SentEmails | Group-Object { $_.SentOn.ToString("yyyy-MM") } | Select-Object Name, Count, @{Name="Size";Expression={($_.Group | Measure-Object Size -Sum).Sum / 1KB}}
 
 # Output the results
